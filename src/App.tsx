@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { Calendar, momentLocalizer } from "react-big-calendar";
-import moment from "moment";
+import dayjs from "dayjs";
+import { Calendar, dayjsLocalizer } from "react-big-calendar";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 
-const localizer = momentLocalizer(moment);
+const localizer = dayjsLocalizer(dayjs);
 const event = [
   {
     id: 1,
@@ -20,6 +23,10 @@ const event = [
   },
 ];
 function App() {
+  const [date, setDate] = useState(
+    dayjs("Tue Apr 04 2023 21:54:06 GMT+0200 (Central European Summer Time)")
+  );
+  //console.log(date.toDate());
   return (
     <div className="App">
       <Calendar
@@ -30,8 +37,20 @@ function App() {
         style={{ height: 500 }}
         onSelectEvent={() => console.log("event")}
         onSelectSlot={() => console.log("slot")}
+        date={date.toDate()}
+        onNavigate={(a) => {
+          setDate(dayjs(a));
+        }}
         selectable
       />
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DateCalendar
+          value={date}
+          onChange={(date) => {
+            if (date) setDate(date);
+          }}
+        />
+      </LocalizationProvider>
     </div>
   );
 }
