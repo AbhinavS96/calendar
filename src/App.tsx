@@ -1,24 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment from "moment";
 
+const localizer = momentLocalizer(moment);
+const event = [
+  {
+    id: 1,
+    title: "Soniya's bad day",
+    start: new Date(2023, 2, 30),
+    end: new Date(2023, 2, 30),
+  },
+  {
+    id: 2,
+    title: "SEES project submission",
+    start: new Date(2023, 2, 31),
+    end: new Date(2023, 2, 31),
+  },
+];
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Calendar
+        localizer={localizer}
+        events={event}
+        startAccessor="start"
+        endAccessor="end"
+        style={{ height: 500 }}
+        onSelectEvent={() => console.log("event")}
+        onSelectSlot={() => console.log("slot")}
+        selectable
+      />
     </div>
   );
 }
