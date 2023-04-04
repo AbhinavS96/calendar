@@ -1,38 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
-import "react-big-calendar/lib/css/react-big-calendar.css";
-import { Calendar, momentLocalizer } from "react-big-calendar";
-import moment from "moment";
+import { Calendar, Views, dayjsLocalizer, View } from "react-big-calendar";
+import DateContext from "./Store/date-context";
+import BigCalendar from "./Components/BigCalendar";
+import SmallCalendar from "./Components/SmallCalendar";
 
-const localizer = momentLocalizer(moment);
-const event = [
-  {
-    id: 1,
-    title: "Soniya's bad day",
-    start: new Date(2023, 2, 30),
-    end: new Date(2023, 2, 30),
-  },
-  {
-    id: 2,
-    title: "SEES project submission",
-    start: new Date(2023, 2, 31),
-    end: new Date(2023, 2, 31),
-  },
-];
 function App() {
+  const [date, setDate] = useState(new Date());
+  const [view, setView] = useState<View>(Views.MONTH);
+  //console.log(date.toDate());
   return (
-    <div className="App">
-      <Calendar
-        localizer={localizer}
-        events={event}
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height: 500 }}
-        onSelectEvent={() => console.log("event")}
-        onSelectSlot={() => console.log("slot")}
-        selectable
-      />
-    </div>
+    <DateContext.Provider
+      value={{
+        selectedDate: date,
+        setSelectedDate: setDate,
+      }}
+    >
+      <div className="App">
+        <SmallCalendar setView={setView} />
+        <BigCalendar view={view} setView={setView} />
+      </div>
+    </DateContext.Provider>
   );
 }
 
