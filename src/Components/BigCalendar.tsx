@@ -1,8 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Calendar, Views, dayjsLocalizer, View } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import dayjs from "dayjs";
 import DateContext from "../Store/date-context";
+import EventForm from "./EventForm";
+import ReactDOM from "react-dom";
 
 const localizer = dayjsLocalizer(dayjs);
 const event = [
@@ -25,6 +27,7 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
   setView,
 }) => {
   const { selectedDate, setSelectedDate } = useContext(DateContext);
+  const [modalOpen, setModalOpen] = useState(false);
   return (
     <div className="big-container">
       <Calendar
@@ -34,7 +37,7 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
         endAccessor="end"
         style={{ height: 500 }}
         onSelectEvent={() => console.log("event")}
-        onSelectSlot={() => console.log("slot")}
+        onSelectSlot={() => setModalOpen(true)}
         date={selectedDate}
         onNavigate={(newDate) => {
           setSelectedDate(newDate);
@@ -47,6 +50,7 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
           setView(a);
         }}
       />
+      <EventForm open={modalOpen} onClose={() => setModalOpen(false)} />
     </div>
   );
 };
