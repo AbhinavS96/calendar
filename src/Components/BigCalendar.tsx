@@ -4,9 +4,11 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import dayjs from "dayjs";
 import DateContext from "../Store/date-context";
 import EventForm from "./EventForm";
-import ReactDOM from "react-dom";
+import { Modal } from "@mui/material";
 
+//localizer for the calendar is dayjs. This is the same as the one for MUI date components.
 const localizer = dayjsLocalizer(dayjs);
+//dummy data
 const event = [
   {
     id: 1,
@@ -22,6 +24,13 @@ const event = [
   },
 ];
 
+/**
+ * The big calendar component.
+ * Accepts the default view (month) as props and the function to update the view as props
+ * Also holds the modal component that is portalled outside automatically by MUI
+ * Modal state is managed inside this component.
+ * Date context is used for tapping into date state
+ */
 const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
   view,
   setView,
@@ -50,7 +59,11 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
           setView(a);
         }}
       />
-      <EventForm open={modalOpen} onClose={() => setModalOpen(false)} />
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
+        <div>
+          <EventForm closeHandler={() => setModalOpen(false)} />
+        </div>
+      </Modal>
     </div>
   );
 };
