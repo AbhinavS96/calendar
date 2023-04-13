@@ -6,6 +6,7 @@ import {
 } from "@mui/material";
 import React, { FormEvent, useState } from "react";
 import EventDate from "./EventDate";
+import { dateProp } from "../Models/dateProp";
 
 const EventForm: React.FC<{ closeHandler: () => void }> = ({
   closeHandler,
@@ -13,10 +14,15 @@ const EventForm: React.FC<{ closeHandler: () => void }> = ({
   const [titleData, setTitleData] = useState("");
   const [eventType, setEventType] = useState("event");
   const [description, setDescription] = useState("");
+  const [fromDate, setFromDate] = useState(new Date());
+  const [toDate, setToDate] = useState(new Date());
+  const [singleDate, setSingleDate] = useState(new Date());
+  const [fromTime, setFromTime] = useState(new Date());
+  const [toTime, setToTime] = useState(new Date());
+  const [allDay, setAllDay] = useState(true);
 
   const submitHandler = (event: FormEvent) => {
     event.preventDefault();
-    console.log("click");
     closeHandler();
   };
 
@@ -52,7 +58,22 @@ const EventForm: React.FC<{ closeHandler: () => void }> = ({
           <ToggleButton value="task">Task</ToggleButton>
           <ToggleButton value="reminder">Reminder</ToggleButton>
         </ToggleButtonGroup>
-        <EventDate />
+        <EventDate
+          dateInfo={{
+            fromDate,
+            setFromDate,
+            toDate,
+            setToDate,
+            singleDate,
+            setSingleDate,
+            fromTime,
+            setFromTime,
+            toTime,
+            setToTime,
+            allDay,
+            setAllDay,
+          }}
+        />
         <TextField
           variant="outlined"
           label="Description"

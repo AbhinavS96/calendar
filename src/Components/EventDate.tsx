@@ -2,32 +2,44 @@ import React, { useState } from "react";
 import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { Checkbox, FormControlLabel } from "@mui/material";
+import { dateProp } from "../Models/dateProp";
 
-const EventDate: React.FC = () => {
-  const [fromDate, setFromDate] = useState(new Date());
-  const [toDate, setToDate] = useState(new Date());
-  const [singleDate, setSingleDate] = useState(new Date());
-  const [fromTime, setFromTime] = useState(new Date());
-  const [toTime, setToTime] = useState(new Date());
-  const [allDay, setAllDay] = useState(true);
-  console.log(allDay);
-
+/**
+ * Component renders either a date range selection or a single day with time selection
+ * based on the user's choice
+ * All values are stored in separate state variables passed down via props
+ */
+const EventDate: React.FC<{ dateInfo: dateProp }> = ({ dateInfo }) => {
+  const {
+    fromDate,
+    setFromDate,
+    toDate,
+    setToDate,
+    singleDate,
+    setSingleDate,
+    fromTime,
+    setFromTime,
+    toTime,
+    setToTime,
+    allDay,
+    setAllDay,
+  } = dateInfo;
   const multiDayPicker = (
     <>
       <DatePicker
         label="From"
         slotProps={{ textField: { size: "small" } }}
         value={dayjs(fromDate)}
-        onChange={(newDate) =>
-          newDate ? setFromDate(newDate.toDate()) : new Date()
-        }
+        onChange={(newDate) => {
+          newDate ? setFromDate(newDate.toDate()) : setFromDate(new Date());
+        }}
       />
       <DatePicker
         label="To"
         slotProps={{ textField: { size: "small" } }}
         value={dayjs(toDate)}
         onChange={(newDate) =>
-          newDate ? setToDate(newDate.toDate()) : new Date()
+          newDate ? setToDate(newDate.toDate()) : setToDate(new Date())
         }
       />
     </>
@@ -39,15 +51,7 @@ const EventDate: React.FC = () => {
         slotProps={{ textField: { size: "small" } }}
         value={dayjs(singleDate)}
         onChange={(newDate) =>
-          newDate ? setSingleDate(newDate.toDate()) : new Date()
-        }
-      />
-      <TimePicker
-        label="to"
-        slotProps={{ textField: { size: "small" } }}
-        value={dayjs(toTime)}
-        onChange={(newTime) =>
-          newTime ? setToTime(newTime.toDate()) : new Date()
+          newDate ? setSingleDate(newDate.toDate()) : setSingleDate(new Date())
         }
       />
       <TimePicker
@@ -55,7 +59,15 @@ const EventDate: React.FC = () => {
         slotProps={{ textField: { size: "small" } }}
         value={dayjs(fromTime)}
         onChange={(newTime) =>
-          newTime ? setFromTime(newTime.toDate()) : new Date()
+          newTime ? setFromTime(newTime.toDate()) : setFromTime(new Date())
+        }
+      />
+      <TimePicker
+        label="to"
+        slotProps={{ textField: { size: "small" } }}
+        value={dayjs(toTime)}
+        onChange={(newTime) =>
+          newTime ? setToTime(newTime.toDate()) : setToTime(new Date())
         }
       />
     </>
@@ -68,9 +80,9 @@ const EventDate: React.FC = () => {
         control={
           <Checkbox
             checked={allDay}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setAllDay(e.target.checked)
-            }
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setAllDay(e.target.checked);
+            }}
           />
         }
         label="All day"
