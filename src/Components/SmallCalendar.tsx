@@ -1,15 +1,18 @@
 import React, { useContext } from "react";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import dayjs from "dayjs";
-import DateContext from "../Store/date-context";
+import dateContext from "../Store/date-context";
 import { View, Views } from "react-big-calendar";
 
+/**
+ * The small calendar that is rendered on the left side.
+ * Accepts the view change handler as a prop
+ * Taps into the date context to keep date state.
+ */
 const SmallCalendar: React.FC<{ setView: (view: View) => void }> = ({
   setView,
 }) => {
-  const { selectedDate, setSelectedDate } = useContext(DateContext);
+  const { selectedDate, setSelectedDate } = useContext(dateContext);
   return (
     <div className="small-container">
       <DateCalendar
