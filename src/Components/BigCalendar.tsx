@@ -42,38 +42,40 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
   const [modalOpen, setModalOpen] = useState(false);
   return (
     <div className="big-container">
-      <eventsContext.Provider
-        value={{
-          events: events,
-          setEvents: setEvents,
-        }}
-      >
-        <Calendar
-          localizer={localizer}
-          events={events}
-          startAccessor="start"
-          endAccessor="end"
-          style={{ height: 500 }}
-          onSelectEvent={() => console.log("event")}
-          onSelectSlot={() => setModalOpen(true)}
-          date={selectedDate}
-          onNavigate={(newDate) => {
-            setSelectedDate(newDate);
+      <div className="big-wrapper">
+        <eventsContext.Provider
+          value={{
+            events: events,
+            setEvents: setEvents,
           }}
-          selectable
-          views={[Views.DAY, Views.WEEK, Views.MONTH]}
-          view={view}
-          onView={(a) => {
-            console.log(a);
-            setView(a);
-          }}
-        />
-        <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-          <div>
-            <EventForm closeHandler={() => setModalOpen(false)} />
-          </div>
-        </Modal>
-      </eventsContext.Provider>
+        >
+          <Calendar
+            localizer={localizer}
+            events={events}
+            startAccessor="start"
+            endAccessor="end"
+            style={{ height: 500 }}
+            onSelectEvent={() => console.log("event")}
+            onSelectSlot={() => setModalOpen(true)}
+            date={selectedDate}
+            onNavigate={(newDate) => {
+              setSelectedDate(newDate);
+            }}
+            selectable
+            views={[Views.DAY, Views.WEEK, Views.MONTH]}
+            view={view}
+            onView={(a) => {
+              console.log(a);
+              setView(a);
+            }}
+          />
+          <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
+            <div>
+              <EventForm closeHandler={() => setModalOpen(false)} />
+            </div>
+          </Modal>
+        </eventsContext.Provider>
+      </div>
     </div>
   );
 };

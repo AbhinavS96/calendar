@@ -8,7 +8,12 @@ import React, { FormEvent, useState, useContext } from "react";
 import EventDate from "./EventDate";
 import { payloadType } from "../Models/payload";
 import eventsContext from "../Store/events-context";
+import styles from "./EventForm.module.css";
 
+/**
+ * The popup form to add a new event.
+ * Keeps all data in state variables and uses context to update the events
+ */
 const EventForm: React.FC<{ closeHandler: () => void }> = ({
   closeHandler,
 }) => {
@@ -44,29 +49,35 @@ const EventForm: React.FC<{ closeHandler: () => void }> = ({
   };
 
   return (
-    <div className="event-container">
+    <div className={styles.eventContainer}>
       <form onSubmit={submitHandler}>
-        <TextField
-          variant="outlined"
-          label="Add title and time"
-          error={false}
-          size="small"
-          value={title}
-          onChange={(e) => {
-            setTitle(e.target.value);
-          }}
-          fullWidth
-        />
-        <ToggleButtonGroup
-          size="small"
-          value={eventType}
-          onChange={toggleHandler}
-          exclusive
-        >
-          <ToggleButton value="event">Event</ToggleButton>
-          <ToggleButton value="task">Task</ToggleButton>
-          <ToggleButton value="reminder">Reminder</ToggleButton>
-        </ToggleButtonGroup>
+        <div className={styles.titleContainer}>
+          <TextField
+            variant="outlined"
+            label="Add title and time"
+            error={false}
+            size="small"
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
+            fullWidth
+          />
+        </div>
+
+        <div className={styles.toggleButtonContainer}>
+          <ToggleButtonGroup
+            size="small"
+            value={eventType}
+            onChange={toggleHandler}
+            exclusive
+          >
+            <ToggleButton value="event">Event</ToggleButton>
+            <ToggleButton value="task">Task</ToggleButton>
+            <ToggleButton value="reminder">Reminder</ToggleButton>
+          </ToggleButtonGroup>
+        </div>
+
         <EventDate
           dateInfo={{
             fromDate,

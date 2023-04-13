@@ -1,0 +1,20 @@
+.eventContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 10px;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  background-color: whitesmoke;
+  border: 2px solid #000;
+  text-align: center;
+}
+
+.titleContainer {
+  padding: 10px 5px 5px 5px;
+}
+
+.toggleButtonContainer {
+  padding: 5px;
+  display: flex;
+}
