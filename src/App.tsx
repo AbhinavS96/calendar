@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 import { Views, View } from "react-big-calendar";
-import DateContext from "./Store/date-context";
+import dateContext from "./Store/date-context";
 import BigCalendar from "./Components/BigCalendar";
 import SmallCalendar from "./Components/SmallCalendar";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -15,7 +15,7 @@ function App() {
   const [view, setView] = useState<View>(Views.MONTH);
 
   return (
-    <DateContext.Provider
+    <dateContext.Provider
       value={{
         selectedDate: date,
         setSelectedDate: setDate,
@@ -27,7 +27,7 @@ function App() {
           <BigCalendar view={view} setView={setView} />
         </LocalizationProvider>
       </div>
-    </DateContext.Provider>
+    </dateContext.Provider>
   );
 }
 

@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import dayjs from "dayjs";
-import DateContext from "../Store/date-context";
+import dateContext from "../Store/date-context";
 import { View, Views } from "react-big-calendar";
 
 /**
@@ -12,7 +12,7 @@ import { View, Views } from "react-big-calendar";
 const SmallCalendar: React.FC<{ setView: (view: View) => void }> = ({
   setView,
 }) => {
-  const { selectedDate, setSelectedDate } = useContext(DateContext);
+  const { selectedDate, setSelectedDate } = useContext(dateContext);
   return (
     <div className="small-container">
       <DateCalendar

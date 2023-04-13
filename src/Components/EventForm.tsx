@@ -4,14 +4,15 @@ import {
   ToggleButtonGroup,
   Button,
 } from "@mui/material";
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useState, useContext } from "react";
 import EventDate from "./EventDate";
-import { dateProp } from "../Models/dateProp";
+import { payloadType } from "../Models/payload";
+import eventsContext from "../Store/events-context";
 
 const EventForm: React.FC<{ closeHandler: () => void }> = ({
   closeHandler,
 }) => {
-  const [titleData, setTitleData] = useState("");
+  const [title, setTitle] = useState("");
   const [eventType, setEventType] = useState("event");
   const [description, setDescription] = useState("");
   const [fromDate, setFromDate] = useState(new Date());
@@ -20,9 +21,18 @@ const EventForm: React.FC<{ closeHandler: () => void }> = ({
   const [fromTime, setFromTime] = useState(new Date());
   const [toTime, setToTime] = useState(new Date());
   const [allDay, setAllDay] = useState(true);
+  const { events, setEvents } = useContext(eventsContext);
 
   const submitHandler = (event: FormEvent) => {
     event.preventDefault();
+    let payload: payloadType = {
+      title,
+      eventType,
+      description,
+      start: fromDate,
+      end: toDate,
+    };
+    setEvents([...events, payload]);
     closeHandler();
   };
 
@@ -32,7 +42,6 @@ const EventForm: React.FC<{ closeHandler: () => void }> = ({
   ) => {
     setEventType(newEventType);
   };
-  console.log(titleData, eventType, description);
 
   return (
     <div className="event-container">
@@ -42,9 +51,9 @@ const EventForm: React.FC<{ closeHandler: () => void }> = ({
           label="Add title and time"
           error={false}
           size="small"
-          value={titleData}
+          value={title}
           onChange={(e) => {
-            setTitleData(e.target.value);
+            setTitle(e.target.value);
           }}
           fullWidth
         />
