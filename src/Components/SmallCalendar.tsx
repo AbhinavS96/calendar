@@ -12,17 +12,15 @@ const SmallCalendar: React.FC<{ setView: (view: View) => void }> = ({
   const { selectedDate, setSelectedDate } = useContext(DateContext);
   return (
     <div className="small-container">
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DateCalendar
-          value={dayjs(selectedDate)}
-          onChange={(date) => {
-            if (date) {
-              setSelectedDate(date.toDate());
-              setView(Views.DAY);
-            }
-          }}
-        />
-      </LocalizationProvider>
+      <DateCalendar
+        value={dayjs(selectedDate)}
+        onChange={(date) => {
+          if (date) {
+            setSelectedDate(date.toDate());
+            setView(Views.DAY);
+          }
+        }}
+      />
     </div>
   );
 };

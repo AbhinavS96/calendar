@@ -4,6 +4,8 @@ import { Calendar, Views, dayjsLocalizer, View } from "react-big-calendar";
 import DateContext from "./Store/date-context";
 import BigCalendar from "./Components/BigCalendar";
 import SmallCalendar from "./Components/SmallCalendar";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 function App() {
   const [date, setDate] = useState(new Date());
@@ -17,8 +19,10 @@ function App() {
       }}
     >
       <div className="App">
-        <SmallCalendar setView={setView} />
-        <BigCalendar view={view} setView={setView} />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <SmallCalendar setView={setView} />
+          <BigCalendar view={view} setView={setView} />
+        </LocalizationProvider>
       </div>
     </DateContext.Provider>
   );
