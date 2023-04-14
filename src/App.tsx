@@ -21,12 +21,15 @@ function App() {
         setSelectedDate: setDate,
       }}
     >
-      <div className="App">
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <SmallCalendar setView={setView} />
-          <BigCalendar view={view} setView={setView} />
-        </LocalizationProvider>
-      </div>
+      <header></header>
+      <main>
+        <div className="App">
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <SmallCalendar setView={setView} />
+            <BigCalendar view={view} setView={setView} />
+          </LocalizationProvider>
+        </div>
+      </main>
     </dateContext.Provider>
   );
 }

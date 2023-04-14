@@ -8,7 +8,12 @@ import React, { FormEvent, useState, useContext } from "react";
 import EventDate from "./EventDate";
 import { payloadType } from "../Models/payload";
 import eventsContext from "../Store/events-context";
+import styles from "./EventForm.module.css";
 
+/**
+ * The popup form to add a new event.
+ * Keeps all data in state variables and uses context to update the events
+ */
 const EventForm: React.FC<{ closeHandler: () => void }> = ({
   closeHandler,
 }) => {
@@ -33,6 +38,7 @@ const EventForm: React.FC<{ closeHandler: () => void }> = ({
       end: toDate,
     };
     setEvents([...events, payload]);
+    console.log(events);
     closeHandler();
   };
 
@@ -44,29 +50,35 @@ const EventForm: React.FC<{ closeHandler: () => void }> = ({
   };
 
   return (
-    <div className="event-container">
+    <div className={styles.eventContainer}>
       <form onSubmit={submitHandler}>
-        <TextField
-          variant="outlined"
-          label="Add title and time"
-          error={false}
-          size="small"
-          value={title}
-          onChange={(e) => {
-            setTitle(e.target.value);
-          }}
-          fullWidth
-        />
-        <ToggleButtonGroup
-          size="small"
-          value={eventType}
-          onChange={toggleHandler}
-          exclusive
-        >
-          <ToggleButton value="event">Event</ToggleButton>
-          <ToggleButton value="task">Task</ToggleButton>
-          <ToggleButton value="reminder">Reminder</ToggleButton>
-        </ToggleButtonGroup>
+        <div className={styles.titleContainer}>
+          <TextField
+            variant="outlined"
+            label="Add title and time"
+            error={false}
+            size="small"
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
+            fullWidth
+          />
+        </div>
+
+        <div className={styles.toggleButtonContainer}>
+          <ToggleButtonGroup
+            size="small"
+            value={eventType}
+            onChange={toggleHandler}
+            exclusive
+          >
+            <ToggleButton value="event">Event</ToggleButton>
+            <ToggleButton value="task">Task</ToggleButton>
+            <ToggleButton value="reminder">Reminder</ToggleButton>
+          </ToggleButtonGroup>
+        </div>
+
         <EventDate
           dateInfo={{
             fromDate,
@@ -83,26 +95,34 @@ const EventForm: React.FC<{ closeHandler: () => void }> = ({
             setAllDay,
           }}
         />
-        <TextField
-          variant="outlined"
-          label="Description"
-          error={false}
-          size="small"
-          multiline
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <Button
-          variant="text"
-          onClick={() => {
-            closeHandler();
-          }}
-        >
-          Cancel
-        </Button>
-        <Button variant="contained" type="submit">
-          Save
-        </Button>
+        <div className={styles.descriptionContainer}>
+          <TextField
+            variant="outlined"
+            label="Description"
+            error={false}
+            size="small"
+            multiline
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            fullWidth
+          />
+        </div>
+        <div className={styles.buttonContainer}>
+          <div>
+            <Button
+              variant="text"
+              onClick={() => {
+                closeHandler();
+              }}
+              className={styles.button}
+            >
+              Cancel
+            </Button>
+            <Button variant="contained" type="submit" className={styles.button}>
+              Save
+            </Button>
+          </div>
+        </div>
       </form>
     </div>
   );
