@@ -1,0 +1,33 @@
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 5px 0;
+}
+.wrapper {
+  width: 100%;
+}
+
+.dateContainer {
+  display: flex;
+  width: 100%;
+}
+.allDayContainer {
+  display: flex;
+  width: 100%;
+  padding-left: 5px;
+  margin-top: -5px;
+}
+
+.dateComponent {
+  padding: 5px;
+}
+
+.singleDateComponent {
+  padding: 5px;
+  width: 50%;
+}
+
+.timeComponent {
+  padding: 5px;
+  width: 25%;
+}
