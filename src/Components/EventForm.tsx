@@ -28,14 +28,12 @@ const intialFormState: form = {
   allDay: true,
 };
 
-const EventForm: React.FC<{ closeHandler: () => void }> = ({
-  closeHandler,
-}) => {
+const EventForm: React.FC<{
+  closeHandler: () => void;
+  formData: form;
+  setFormData: React.Dispatch<React.SetStateAction<form>>;
+}> = ({ closeHandler, formData, setFormData }) => {
   const { events, setEvents } = useContext(eventsContext);
-
-  const [formData, setFormData] = useState(intialFormState);
-  console.log(formData.fromTime);
-  console.log(formData.toTime);
 
   const submitHandler = (event: FormEvent) => {
     event.preventDefault();
