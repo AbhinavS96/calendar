@@ -13,9 +13,7 @@ import styles from "./EventDate.module.css";
 const EventDate: React.FC<{ dateInfo: dateProp }> = ({ dateInfo }) => {
   const {
     fromDate,
-    setFromDate,
     toDate,
-    setToDate,
     singleDate,
     setSingleDate,
     fromTime,
@@ -24,6 +22,7 @@ const EventDate: React.FC<{ dateInfo: dateProp }> = ({ dateInfo }) => {
     setToTime,
     allDay,
     setAllDay,
+    setFormData,
   } = dateInfo;
   const multiDayPicker = (
     <>
@@ -33,7 +32,12 @@ const EventDate: React.FC<{ dateInfo: dateProp }> = ({ dateInfo }) => {
           slotProps={{ textField: { size: "small" } }}
           value={dayjs(fromDate)}
           onChange={(newDate) => {
-            newDate ? setFromDate(newDate.toDate()) : setFromDate(new Date());
+            setFormData((prev) => {
+              return {
+                ...prev,
+                fromDate: newDate ? newDate.toDate() : new Date(),
+              };
+            });
           }}
         />
       </div>
@@ -43,7 +47,12 @@ const EventDate: React.FC<{ dateInfo: dateProp }> = ({ dateInfo }) => {
           slotProps={{ textField: { size: "small" } }}
           value={dayjs(toDate)}
           onChange={(newDate) =>
-            newDate ? setToDate(newDate.toDate()) : setToDate(new Date())
+            setFormData((prev) => {
+              return {
+                ...prev,
+                toDate: newDate ? newDate.toDate() : new Date(),
+              };
+            })
           }
         />
       </div>
