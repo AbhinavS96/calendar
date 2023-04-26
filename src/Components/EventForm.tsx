@@ -16,27 +16,12 @@ import { form } from "../Models/form";
  * Keeps all data in state variables and uses context to update the events
  */
 
-const intialFormState: form = {
-  title: "",
-  eventType: "",
-  description: "",
-  fromDate: new Date(),
-  toDate: new Date(),
-  singleDate: new Date(),
-  fromTime: new Date(),
-  toTime: new Date(),
-  allDay: true,
-};
-
-const EventForm: React.FC<{ closeHandler: () => void }> = ({
-  closeHandler,
-}) => {
+const EventForm: React.FC<{
+  closeHandler: () => void;
+  formData: form;
+  setFormData: React.Dispatch<React.SetStateAction<form>>;
+}> = ({ closeHandler, formData, setFormData }) => {
   const { events, setEvents } = useContext(eventsContext);
-
-  const [formData, setFormData] = useState(intialFormState);
-  console.log(formData.fromTime);
-  console.log(formData.toTime);
-
   const submitHandler = (event: FormEvent) => {
     event.preventDefault();
     let payload: payloadType = {

@@ -7,6 +7,7 @@ import EventForm from "./EventForm";
 import { Modal } from "@mui/material";
 import eventsContext from "../Store/events-context";
 import { payloadType } from "../Models/payload";
+import { form } from "../Models/form";
 
 //localizer for the calendar is dayjs. This is the same as the one for MUI date components.
 const localizer = dayjsLocalizer(dayjs);
@@ -26,6 +27,18 @@ const event: payloadType[] = [
   },
 ];
 
+const intialFormState: form = {
+  title: "",
+  eventType: "",
+  description: "",
+  fromDate: new Date(),
+  toDate: new Date(),
+  singleDate: new Date(),
+  fromTime: new Date(),
+  toTime: new Date(),
+  allDay: true,
+};
+
 /**
  * The big calendar component.
  * Accepts the default view (month) as props and the function to update the view as props
@@ -40,6 +53,66 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
   const { selectedDate, setSelectedDate } = useContext(dateContext);
   const [events, setEvents] = useState(event);
   const [modalOpen, setModalOpen] = useState(false);
+  const [formData, setFormData] = useState(intialFormState);
+
+  const onSelectHandler = (event: payloadType) => {
+    setFormData((prev) => {
+      return {
+        ...prev,
+        title: event.title,
+        eventType: event.eventType ? event.eventType : prev.eventType,
+        fromDate: event.start,
+        toDate: event.end,
+      };
+    });
+    setModalOpen(true);
+  };
+
+  const modal = (
+    <Modal
+      open={modalOpen}
+      onClose={() => {
+        setModalOpen(false);
+        setFormData(intialFormState);
+      }}
+    >
+      <div>
+        <EventForm
+          closeHandler={() => {
+            setModalOpen(false);
+            setFormData(intialFormState);
+          }}
+          formData={formData}
+          setFormData={setFormData}
+        />
+      </div>
+    </Modal>
+  );
+
+  const calendar = (
+    <Calendar
+      localizer={localizer}
+      events={events}
+      startAccessor="start"
+      endAccessor="end"
+      style={{ height: 500 }}
+      onSelectEvent={(event) => {
+        onSelectHandler(event);
+      }}
+      onSelectSlot={() => setModalOpen(true)}
+      date={selectedDate}
+      onNavigate={(newDate) => {
+        setSelectedDate(newDate);
+      }}
+      selectable
+      views={[Views.DAY, Views.WEEK, Views.MONTH]}
+      view={view}
+      onView={(a) => {
+        setView(a);
+      }}
+    />
+  );
+
   return (
     <div className="big-container">
       <div className="big-wrapper">
@@ -49,31 +122,8 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
             setEvents: setEvents,
           }}
         >
-          <Calendar
-            localizer={localizer}
-            events={events}
-            startAccessor="start"
-            endAccessor="end"
-            style={{ height: 500 }}
-            onSelectEvent={() => console.log("event")}
-            onSelectSlot={() => setModalOpen(true)}
-            date={selectedDate}
-            onNavigate={(newDate) => {
-              setSelectedDate(newDate);
-            }}
-            selectable
-            views={[Views.DAY, Views.WEEK, Views.MONTH]}
-            view={view}
-            onView={(a) => {
-              console.log(a);
-              setView(a);
-            }}
-          />
-          <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-            <div>
-              <EventForm closeHandler={() => setModalOpen(false)} />
-            </div>
-          </Modal>
+          {calendar}
+          {modal}
         </eventsContext.Provider>
       </div>
     </div>
