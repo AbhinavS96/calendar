@@ -4,38 +4,50 @@ import {
   ToggleButtonGroup,
   Button,
 } from "@mui/material";
-import React, { FormEvent, useState, useContext } from "react";
+import React, { FormEvent, useState, useContext, useReducer } from "react";
 import EventDate from "./EventDate";
 import { payloadType } from "../Models/payload";
 import eventsContext from "../Store/events-context";
 import styles from "./EventForm.module.css";
+import { form } from "../Models/form";
 
 /**
  * The popup form to add a new event.
  * Keeps all data in state variables and uses context to update the events
  */
+
+const intialFormState: form = {
+  title: "",
+  eventType: "",
+  description: "",
+  fromDate: new Date(),
+  toDate: new Date(),
+  singleDate: new Date(),
+  fromTime: new Date(),
+  toTime: new Date(),
+  allDay: true,
+};
+
 const EventForm: React.FC<{ closeHandler: () => void }> = ({
   closeHandler,
 }) => {
-  const [title, setTitle] = useState("");
-  const [eventType, setEventType] = useState("event");
-  const [description, setDescription] = useState("");
-  const [fromDate, setFromDate] = useState(new Date());
-  const [toDate, setToDate] = useState(new Date());
   const [singleDate, setSingleDate] = useState(new Date());
   const [fromTime, setFromTime] = useState(new Date());
   const [toTime, setToTime] = useState(new Date());
   const [allDay, setAllDay] = useState(true);
   const { events, setEvents } = useContext(eventsContext);
 
+  const [formData, setFormData] = useState(intialFormState);
+  console.log(formData.fromDate);
+
   const submitHandler = (event: FormEvent) => {
     event.preventDefault();
     let payload: payloadType = {
-      title,
-      eventType,
-      description,
-      start: fromDate,
-      end: toDate,
+      title: formData.title,
+      eventType: formData.eventType,
+      description: formData.description,
+      start: formData.fromDate,
+      end: formData.toDate,
     };
     setEvents([...events, payload]);
     console.log(events);
@@ -44,9 +56,12 @@ const EventForm: React.FC<{ closeHandler: () => void }> = ({
 
   const toggleHandler = (
     event: React.MouseEvent<HTMLElement>,
-    newEventType: string
+    newEventType: string | null
   ) => {
-    setEventType(newEventType);
+    if (newEventType)
+      setFormData((prev) => {
+        return { ...prev, eventType: newEventType };
+      });
   };
 
   return (
@@ -58,9 +73,11 @@ const EventForm: React.FC<{ closeHandler: () => void }> = ({
             label="Add title and time"
             error={false}
             size="small"
-            value={title}
+            value={formData.title}
             onChange={(e) => {
-              setTitle(e.target.value);
+              setFormData((prev) => {
+                return { ...prev, title: e.target.value };
+              });
             }}
             fullWidth
           />
@@ -69,7 +86,7 @@ const EventForm: React.FC<{ closeHandler: () => void }> = ({
         <div className={styles.toggleButtonContainer}>
           <ToggleButtonGroup
             size="small"
-            value={eventType}
+            value={formData.eventType}
             onChange={toggleHandler}
             exclusive
           >
@@ -81,18 +98,17 @@ const EventForm: React.FC<{ closeHandler: () => void }> = ({
 
         <EventDate
           dateInfo={{
-            fromDate,
-            setFromDate,
-            toDate,
-            setToDate,
-            singleDate,
+            fromDate: formData.fromDate,
+            toDate: formData.toDate,
+            singleDate: formData.singleDate,
             setSingleDate,
-            fromTime,
+            fromTime: formData.fromTime,
             setFromTime,
-            toTime,
+            toTime: formData.toTime,
             setToTime,
-            allDay,
+            allDay: formData.allDay,
             setAllDay,
+            setFormData: setFormData,
           }}
         />
         <div className={styles.descriptionContainer}>
@@ -102,8 +118,12 @@ const EventForm: React.FC<{ closeHandler: () => void }> = ({
             error={false}
             size="small"
             multiline
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={formData.description}
+            onChange={(e) =>
+              setFormData((prev) => {
+                return { ...prev, description: e.target.value };
+              })
+            }
             fullWidth
           />
         </div>
