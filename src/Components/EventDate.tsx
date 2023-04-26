@@ -15,13 +15,9 @@ const EventDate: React.FC<{ dateInfo: dateProp }> = ({ dateInfo }) => {
     fromDate,
     toDate,
     singleDate,
-    setSingleDate,
     fromTime,
-    setFromTime,
     toTime,
-    setToTime,
     allDay,
-    setAllDay,
     setFormData,
   } = dateInfo;
   const multiDayPicker = (
@@ -66,9 +62,12 @@ const EventDate: React.FC<{ dateInfo: dateProp }> = ({ dateInfo }) => {
           slotProps={{ textField: { size: "small" } }}
           value={dayjs(singleDate)}
           onChange={(newDate) =>
-            newDate
-              ? setSingleDate(newDate.toDate())
-              : setSingleDate(new Date())
+            setFormData((prev) => {
+              return {
+                ...prev,
+                singleDate: newDate ? newDate.toDate() : new Date(),
+              };
+            })
           }
         />
       </div>
@@ -78,7 +77,12 @@ const EventDate: React.FC<{ dateInfo: dateProp }> = ({ dateInfo }) => {
           slotProps={{ textField: { size: "small" } }}
           value={dayjs(fromTime)}
           onChange={(newTime) =>
-            newTime ? setFromTime(newTime.toDate()) : setFromTime(new Date())
+            setFormData((prev) => {
+              return {
+                ...prev,
+                fromTime: newTime ? newTime.toDate() : new Date(),
+              };
+            })
           }
         />
       </div>
@@ -88,7 +92,12 @@ const EventDate: React.FC<{ dateInfo: dateProp }> = ({ dateInfo }) => {
           slotProps={{ textField: { size: "small" } }}
           value={dayjs(toTime)}
           onChange={(newTime) =>
-            newTime ? setToTime(newTime.toDate()) : setToTime(new Date())
+            setFormData((prev) => {
+              return {
+                ...prev,
+                toTime: newTime ? newTime.toDate() : new Date(),
+              };
+            })
           }
         />
       </div>
@@ -107,7 +116,12 @@ const EventDate: React.FC<{ dateInfo: dateProp }> = ({ dateInfo }) => {
               <Checkbox
                 checked={allDay}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setAllDay(e.target.checked);
+                  setFormData((prev) => {
+                    return {
+                      ...prev,
+                      allDay: !prev.allDay,
+                    };
+                  });
                 }}
               />
             }
