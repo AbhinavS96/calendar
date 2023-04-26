@@ -31,14 +31,11 @@ const intialFormState: form = {
 const EventForm: React.FC<{ closeHandler: () => void }> = ({
   closeHandler,
 }) => {
-  const [singleDate, setSingleDate] = useState(new Date());
-  const [fromTime, setFromTime] = useState(new Date());
-  const [toTime, setToTime] = useState(new Date());
-  const [allDay, setAllDay] = useState(true);
   const { events, setEvents } = useContext(eventsContext);
 
   const [formData, setFormData] = useState(intialFormState);
-  console.log(formData.fromDate);
+  console.log(formData.fromTime);
+  console.log(formData.toTime);
 
   const submitHandler = (event: FormEvent) => {
     event.preventDefault();
@@ -101,13 +98,9 @@ const EventForm: React.FC<{ closeHandler: () => void }> = ({
             fromDate: formData.fromDate,
             toDate: formData.toDate,
             singleDate: formData.singleDate,
-            setSingleDate,
             fromTime: formData.fromTime,
-            setFromTime,
             toTime: formData.toTime,
-            setToTime,
             allDay: formData.allDay,
-            setAllDay,
             setFormData: setFormData,
           }}
         />
