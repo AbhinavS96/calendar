@@ -78,12 +78,39 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
     >
       <div>
         <EventForm
-          closeHandler={() => setModalOpen(false)}
+          closeHandler={() => {
+            setModalOpen(false);
+            setFormData(intialFormState);
+          }}
           formData={formData}
           setFormData={setFormData}
         />
       </div>
     </Modal>
+  );
+
+  const calendar = (
+    <Calendar
+      localizer={localizer}
+      events={events}
+      startAccessor="start"
+      endAccessor="end"
+      style={{ height: 500 }}
+      onSelectEvent={(event) => {
+        onSelectHandler(event);
+      }}
+      onSelectSlot={() => setModalOpen(true)}
+      date={selectedDate}
+      onNavigate={(newDate) => {
+        setSelectedDate(newDate);
+      }}
+      selectable
+      views={[Views.DAY, Views.WEEK, Views.MONTH]}
+      view={view}
+      onView={(a) => {
+        setView(a);
+      }}
+    />
   );
 
   return (
@@ -95,27 +122,7 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
             setEvents: setEvents,
           }}
         >
-          <Calendar
-            localizer={localizer}
-            events={events}
-            startAccessor="start"
-            endAccessor="end"
-            style={{ height: 500 }}
-            onSelectEvent={(event) => {
-              onSelectHandler(event);
-            }}
-            onSelectSlot={() => setModalOpen(true)}
-            date={selectedDate}
-            onNavigate={(newDate) => {
-              setSelectedDate(newDate);
-            }}
-            selectable
-            views={[Views.DAY, Views.WEEK, Views.MONTH]}
-            view={view}
-            onView={(a) => {
-              setView(a);
-            }}
-          />
+          {calendar}
           {modal}
         </eventsContext.Provider>
       </div>
