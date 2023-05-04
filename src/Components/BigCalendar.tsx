@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Calendar, Views, dayjsLocalizer, View } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import dayjs from "dayjs";
@@ -11,21 +11,6 @@ import { form } from "../Models/form";
 
 //localizer for the calendar is dayjs. This is the same as the one for MUI date components.
 const localizer = dayjsLocalizer(dayjs);
-//dummy data
-const event: payloadType[] = [
-  {
-    id: 1,
-    title: "Soniya's bad day",
-    start: new Date(2023, 2, 30),
-    end: new Date(2023, 2, 30),
-  },
-  {
-    id: 2,
-    title: "SEES project submission",
-    start: new Date(2023, 2, 31),
-    end: new Date(2023, 2, 31),
-  },
-];
 
 const intialFormState: form = {
   title: "",
@@ -51,9 +36,20 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
   setView,
 }) => {
   const { selectedDate, setSelectedDate } = useContext(dateContext);
-  const [events, setEvents] = useState(event);
+  const [events, setEvents] = useState<payloadType[] | []>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState(intialFormState);
+
+  useEffect(() => {
+    (async () => {
+      const response = await fetch("http://127.0.0.1:5000/get_events");
+      const result = await response.json();
+      const mappedResults = result.map((res: payloadType) => {
+        return { ...res, start: new Date(res.start), end: new Date(res.end) };
+      });
+      setEvents(mappedResults);
+    })();
+  }, []);
 
   const onSelectHandler = (event: payloadType) => {
     setFormData((prev) => {
@@ -63,6 +59,7 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
         eventType: event.eventType ? event.eventType : prev.eventType,
         fromDate: event.start,
         toDate: event.end,
+        id: event.id,
       };
     });
     setModalOpen(true);

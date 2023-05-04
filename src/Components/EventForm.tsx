@@ -4,7 +4,7 @@ import {
   ToggleButtonGroup,
   Button,
 } from "@mui/material";
-import React, { FormEvent, useState, useContext, useReducer } from "react";
+import React, { FormEvent, useContext } from "react";
 import EventDate from "./EventDate";
 import { payloadType } from "../Models/payload";
 import eventsContext from "../Store/events-context";
@@ -31,9 +31,36 @@ const EventForm: React.FC<{
       start: formData.fromDate,
       end: formData.toDate,
     };
-    setEvents([...events, payload]);
-    console.log(events);
-    closeHandler();
+    let URL = "http://127.0.0.1:5000/add_event";
+    if (formData.id) {
+      payload = { ...payload, id: formData.id };
+      URL = "http://127.0.0.1:5000/update_event";
+    }
+
+    (async () => {
+      const response = await fetch("http://127.0.0.1:5000/update_event", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ event: formData }),
+      });
+      const result = await response.json();
+      if (result["status"] === "success") {
+        if (payload.id) {
+          setEvents(
+            events.map((event: payloadType) =>
+              event.id === payload.id ? payload : event
+            )
+          );
+        } else {
+          setEvents([...events, payload]);
+        }
+        closeHandler();
+      } else {
+        console.log("error");
+      }
+    })();
   };
 
   const toggleHandler = (
