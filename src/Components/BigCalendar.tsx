@@ -59,6 +59,7 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
         eventType: event.eventType ? event.eventType : prev.eventType,
         fromDate: event.start,
         toDate: event.end,
+        id: event.id,
       };
     });
     setModalOpen(true);

@@ -14,20 +14,6 @@ function App() {
   const [date, setDate] = useState(new Date());
   const [view, setView] = useState<View>(Views.MONTH);
 
-  useEffect(() => {
-    (async () => {
-      const response = await fetch("http://127.0.0.1:5000/update_event", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ data: "test" }),
-      });
-      const result = await response.json();
-      console.log(result);
-    })();
-  }, []);
-
   return (
     <dateContext.Provider
       value={{

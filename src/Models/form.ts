@@ -1,4 +1,5 @@
 export type form = {
+  id?: number;
   title: string;
   eventType: string;
   description: string;
