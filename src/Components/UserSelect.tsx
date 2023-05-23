@@ -3,13 +3,40 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { userType } from "../Models/user";
 
 export default function UserSelect() {
-  const [user, setUser] = useState("user1");
-
+  const [users, setUsers] = useState<userType[] | []>([]);
+  const [user, setUser] = useState<userType>();
+  useEffect(() => {
+    (async () => {
+      const response = await fetch("http://127.0.0.1:5000/get_users");
+      const result = await response.json();
+      setUsers(result);
+      setUser(users[0]);
+    })();
+  }, []);
   const onChangeHandler = (event: SelectChangeEvent) => {
-    setUser(event.target.value as string);
+    const user: userType = users.filter(
+      (user) => `${user.id}` == (event.target.value as string)[0]
+    )[0];
+    (async () => {
+      const response = await fetch("http://127.0.0.1:5000/set_user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: user.id }),
+      });
+      if (response.status == 200) {
+        const result = await response.json();
+        console.log(result.message);
+        setUser(user);
+      } else {
+        console.log("error");
+      }
+    })();
   };
 
   return (
@@ -18,13 +45,15 @@ export default function UserSelect() {
         <InputLabel id="user-select-label">User</InputLabel>
         <Select
           id="user-select"
-          value={user}
+          value={user ? `${user.id}` : "1"}
           label="User"
           onChange={onChangeHandler}
         >
-          <MenuItem value={"user1"}>User 1</MenuItem>
-          <MenuItem value={"user2"}>User 2</MenuItem>
-          <MenuItem value={"user3"}>User 3</MenuItem>
+          {users.map((user) => (
+            <MenuItem key={user.id} value={`${user.id}`}>
+              {user.name}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
     </Box>
