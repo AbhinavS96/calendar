@@ -27,6 +27,7 @@ const EventForm: React.FC<{
     let payload: payloadType = {
       title: formData.title,
       eventType: formData.eventType,
+      calendarId: 0,
       description: formData.description,
       start: formData.fromDate,
       end: formData.toDate,
@@ -43,7 +44,7 @@ const EventForm: React.FC<{
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ event: formData }),
+        body: JSON.stringify(formData),
       });
       const result = await response.json();
       if (result["status"] === "success") {

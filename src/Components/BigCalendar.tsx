@@ -14,7 +14,7 @@ const localizer = dayjsLocalizer(dayjs);
 
 const intialFormState: form = {
   title: "",
-  eventType: "",
+  eventType: "event",
   description: "",
   fromDate: new Date(),
   toDate: new Date(),
@@ -44,9 +44,16 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
     (async () => {
       const response = await fetch("http://127.0.0.1:5000/get_events");
       const result = await response.json();
-      const mappedResults = result.map((res: payloadType) => {
-        return { ...res, start: new Date(res.start), end: new Date(res.end) };
-      });
+      const mappedResults =
+        Object.keys(result).length == 0
+          ? []
+          : result.map((res: payloadType) => {
+              return {
+                ...res,
+                start: new Date(res.start),
+                end: new Date(res.end),
+              };
+            });
       setEvents(mappedResults);
     })();
   }, []);
