@@ -6,6 +6,7 @@ import BigCalendar from "./Components/BigCalendar";
 import SmallCalendar from "./Components/SmallCalendar";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import UserSelect from "./Components/UserSelect";
 
 /**
  * The base component. Keeps the selected date state and calendar view state
@@ -25,7 +26,12 @@ function App() {
       <main>
         <div className="App">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <SmallCalendar setView={setView} />
+            <div className="small-container">
+              <div className="small-wrapper">
+                <SmallCalendar setView={setView} />
+                <UserSelect />
+              </div>
+            </div>
             <BigCalendar view={view} setView={setView} />
           </LocalizationProvider>
         </div>
