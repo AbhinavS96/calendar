@@ -14,20 +14,16 @@ const SmallCalendar: React.FC<{ setView: (view: View) => void }> = ({
 }) => {
   const { selectedDate, setSelectedDate } = useContext(dateContext);
   return (
-    <div className="small-container">
-      <div className="small-wrapper">
-        <DateCalendar
-          value={dayjs(selectedDate)}
-          onChange={(date) => {
-            if (date) {
-              setSelectedDate(date.toDate());
-              setView(Views.DAY);
-            }
-          }}
-          sx={{ padding: 0, margin: 0, width: 1 }}
-        />
-      </div>
-    </div>
+    <DateCalendar
+      value={dayjs(selectedDate)}
+      onChange={(date) => {
+        if (date) {
+          setSelectedDate(date.toDate());
+          setView(Views.DAY);
+        }
+      }}
+      sx={{ padding: 0, margin: 0, width: 1 }}
+    />
   );
 };
 

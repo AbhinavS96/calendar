@@ -27,7 +27,6 @@ const EventForm: React.FC<{
     let payload: payloadType = {
       title: formData.title,
       eventType: formData.eventType,
-      calendarId: 0,
       description: formData.description,
       start: formData.fromDate,
       end: formData.toDate,
@@ -46,16 +45,16 @@ const EventForm: React.FC<{
         },
         body: JSON.stringify(formData),
       });
-      const result = await response.json();
-      if (result["status"] === "success") {
-        if (payload.id) {
+      if (response.status == 200) {
+        const result = await response.json();
+        if (result.id) {
           setEvents(
             events.map((event: payloadType) =>
-              event.id === payload.id ? payload : event
+              event.id === result.id ? result : event
             )
           );
         } else {
-          setEvents([...events, payload]);
+          setEvents([...events, result]);
         }
         closeHandler();
       } else {
