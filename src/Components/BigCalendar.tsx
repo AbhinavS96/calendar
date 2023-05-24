@@ -40,6 +40,15 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
   const [modalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState(intialFormState);
 
+  const selectSlotHandler = (event: any) => {
+    const fromDate = event.slots[0];
+    const toDate = event.slots.slice(-1)[0];
+    setFormData((prevData) => {
+      return { ...prevData, fromDate, toDate };
+    });
+    setModalOpen(true);
+  };
+
   useEffect(() => {
     (async () => {
       const response = await fetch("http://127.0.0.1:5000/get_events");
@@ -127,7 +136,7 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
       onSelectEvent={(event) => {
         onSelectHandler(event);
       }}
-      onSelectSlot={() => setModalOpen(true)}
+      onSelectSlot={selectSlotHandler}
       date={selectedDate}
       onNavigate={(newDate) => {
         setSelectedDate(newDate);
