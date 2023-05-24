@@ -9,14 +9,14 @@ import { userType } from "../Models/user";
 export default function UserSelect() {
   const [users, setUsers] = useState<userType[] | []>([]);
   const [user, setUser] = useState<userType>();
-  useEffect(() => {
-    (async () => {
-      const response = await fetch("http://127.0.0.1:5000/get_users");
-      const result = await response.json();
-      setUsers(result);
-      setUser(users[0]);
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     const response = await fetch("http://127.0.0.1:5000/get_users");
+  //     const result = await response.json();
+  //     setUsers(result);
+  //     setUser(users[0]);
+  //   })();
+  // }, []);
   const onChangeHandler = (event: SelectChangeEvent) => {
     const user: userType = users.filter(
       (user) => `${user.id}` == (event.target.value as string)[0]

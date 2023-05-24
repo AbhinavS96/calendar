@@ -44,16 +44,40 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
     (async () => {
       const response = await fetch("http://127.0.0.1:5000/get_events");
       const result = await response.json();
-      const mappedResults =
-        Object.keys(result).length == 0
-          ? []
-          : result.map((res: payloadType) => {
-              return {
-                ...res,
-                start: new Date(res.start),
-                end: new Date(res.end),
-              };
-            });
+
+      let mappedResults: payloadType[] = [];
+      if (Object.keys(result).length != 0) {
+        mappedResults.push(
+          result["events"].map((res: payloadType) => {
+            return {
+              ...res,
+              eventType: "event",
+              start: new Date(res.start),
+              end: new Date(res.end),
+            };
+          })
+        );
+        mappedResults.push(
+          result["tasks"].map((res: payloadType) => {
+            return {
+              ...res,
+              eventType: "task",
+              start: new Date(res.start),
+              end: new Date(res.end),
+            };
+          })
+        );
+        mappedResults.push(
+          result["reminders"].map((res: payloadType) => {
+            return {
+              ...res,
+              eventType: "reminder",
+              start: new Date(res.start),
+              end: new Date(res.end),
+            };
+          })
+        );
+      }
       setEvents(mappedResults);
     })();
   }, []);
