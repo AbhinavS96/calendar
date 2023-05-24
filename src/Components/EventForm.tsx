@@ -30,6 +30,7 @@ const EventForm: React.FC<{
       description: formData.description,
       start: formData.fromDate,
       end: formData.toDate,
+      calendar_id: 1,
     };
     let URL = "http://127.0.0.1:5000/add_event";
     if (formData.id) {
@@ -48,12 +49,14 @@ const EventForm: React.FC<{
       if (response.status == 200) {
         const result = await response.json();
         if (result.id) {
+          console.log(result);
           setEvents(
             events.map((event: payloadType) =>
               event.id === result.id ? result : event
             )
           );
         } else {
+          console.log(result);
           setEvents([...events, result]);
         }
         closeHandler();

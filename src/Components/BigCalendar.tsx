@@ -40,20 +40,53 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
   const [modalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState(intialFormState);
 
+  const selectSlotHandler = (event: any) => {
+    const fromDate = event.slots[0];
+    const toDate = event.slots.slice(-1)[0];
+    setFormData((prevData) => {
+      return { ...prevData, fromDate, toDate };
+    });
+    setModalOpen(true);
+  };
+
   useEffect(() => {
     (async () => {
       const response = await fetch("http://127.0.0.1:5000/get_events");
       const result = await response.json();
-      const mappedResults =
-        Object.keys(result).length == 0
-          ? []
-          : result.map((res: payloadType) => {
-              return {
-                ...res,
-                start: new Date(res.start),
-                end: new Date(res.end),
-              };
-            });
+
+      let mappedResults: payloadType[] = [];
+      if (Object.keys(result).length != 0) {
+        mappedResults.push(
+          result["events"].map((res: payloadType) => {
+            return {
+              ...res,
+              eventType: "event",
+              start: new Date(res.start),
+              end: new Date(res.end),
+            };
+          })
+        );
+        mappedResults.push(
+          result["tasks"].map((res: payloadType) => {
+            return {
+              ...res,
+              eventType: "task",
+              start: new Date(res.start),
+              end: new Date(res.end),
+            };
+          })
+        );
+        mappedResults.push(
+          result["reminders"].map((res: payloadType) => {
+            return {
+              ...res,
+              eventType: "reminder",
+              start: new Date(res.start),
+              end: new Date(res.end),
+            };
+          })
+        );
+      }
       setEvents(mappedResults);
     })();
   }, []);
@@ -103,7 +136,7 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
       onSelectEvent={(event) => {
         onSelectHandler(event);
       }}
-      onSelectSlot={() => setModalOpen(true)}
+      onSelectSlot={selectSlotHandler}
       date={selectedDate}
       onNavigate={(newDate) => {
         setSelectedDate(newDate);
