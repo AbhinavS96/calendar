@@ -22,6 +22,7 @@ const intialFormState: form = {
   fromTime: new Date(),
   toTime: new Date(),
   allDay: true,
+  priority: 1,
 };
 
 /**

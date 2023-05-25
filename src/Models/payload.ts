@@ -7,4 +7,5 @@ export type payloadType = {
   end: Date | string;
   calendar_id?: number;
   allDay?: boolean;
+  priority?: number;
 };

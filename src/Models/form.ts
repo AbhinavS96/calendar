@@ -9,4 +9,5 @@ export type form = {
   fromTime: Date;
   toTime: Date;
   allDay: boolean;
+  priority: number;
 };

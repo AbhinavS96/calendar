@@ -24,6 +24,11 @@
   padding: 0 5px;
 }
 
+.priorityContainer {
+  padding: 10px 0 0 5px;
+  text-align: left;
+}
+
 .buttonContainer {
   display: flex;
   padding-top: 10px;
