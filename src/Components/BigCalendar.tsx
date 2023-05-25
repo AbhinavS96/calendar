@@ -97,10 +97,29 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
     </Modal>
   );
 
+  const eventStyleGetter = (event: any) => {
+    let backgroundColor = "";
+
+    if (event.eventType === "event") {
+      backgroundColor = "blue";
+    } else if (event.eventType === "task") {
+      backgroundColor = "green";
+    } else if (event.eventType === "reminder") {
+      backgroundColor = "red";
+    }
+
+    return {
+      style: {
+        backgroundColor,
+      },
+    };
+  };
+
   const calendar = (
     <Calendar
       localizer={localizer}
       events={events}
+      eventPropGetter={eventStyleGetter}
       startAccessor="start"
       endAccessor="end"
       style={{ height: 500 }}
