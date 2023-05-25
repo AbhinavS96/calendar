@@ -44,9 +44,15 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
     const fromDate = event.slots[0];
     const toDate = event.slots.slice(-1)[0];
     setFormData((prevData) => {
-      return { ...prevData, fromDate, toDate };
+      return {
+        ...prevData,
+        fromDate: new Date(fromDate),
+        toDate: new Date(toDate),
+        singleDate: new Date(fromDate),
+      };
     });
     setModalOpen(true);
+    console.log(events);
   };
 
   useEffect(() => {
@@ -57,7 +63,7 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
       let mappedResults: payloadType[] = [];
       if (Object.keys(result).length != 0) {
         mappedResults.push(
-          result["events"].map((res: payloadType) => {
+          ...result["events"].map((res: payloadType) => {
             return {
               ...res,
               eventType: "event",
@@ -67,7 +73,7 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
           })
         );
         mappedResults.push(
-          result["tasks"].map((res: payloadType) => {
+          ...result["tasks"].map((res: payloadType) => {
             return {
               ...res,
               eventType: "task",
@@ -77,7 +83,7 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
           })
         );
         mappedResults.push(
-          result["reminders"].map((res: payloadType) => {
+          ...result["reminders"].map((res: payloadType) => {
             return {
               ...res,
               eventType: "reminder",
@@ -91,7 +97,7 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
     })();
   }, []);
 
-  const onSelectHandler = (event: payloadType) => {
+  const onSelectHandler = (event: any) => {
     setFormData((prev) => {
       return {
         ...prev,
