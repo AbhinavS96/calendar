@@ -14,7 +14,8 @@ import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Select from "@mui/material/Select";
+import { ReactComponent as DeleteLogo } from "../assets/delete.svg";
 
 /**
  * The popup form to add a new event.
@@ -75,14 +76,12 @@ const EventForm: React.FC<{
           end: result.toDate,
         };
         if (result.id) {
-          console.log(result);
           setEvents(
             events.map((event: payloadType) =>
               event.id === result.id ? result : event
             )
           );
         } else {
-          console.log(result);
           setEvents([...events, result]);
         }
         closeHandler();
@@ -102,8 +101,36 @@ const EventForm: React.FC<{
       });
   };
 
+  const deleteHandler = () => {
+    (async () => {
+      const response = await fetch("http://127.0.0.1:5000/delete_event", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: formData.id,
+          eventType: formData.eventType,
+        }),
+      });
+      if (response.status == 200) {
+        closeHandler();
+      } else {
+        console.log("error");
+      }
+    })();
+    closeHandler();
+  };
+
   return (
     <div className={styles.eventContainer}>
+      {formData.id && (
+        <div className={styles.deleteContainer}>
+          <Button variant="text" onClick={deleteHandler} id="deleteButton">
+            {<DeleteLogo />}
+          </Button>
+        </div>
+      )}
       <form onSubmit={submitHandler}>
         <div className={styles.titleContainer}>
           <TextField
