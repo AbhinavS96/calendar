@@ -72,10 +72,10 @@ const EventForm: React.FC<{
         let result = await response.json();
         result = {
           ...result,
-          start: result.fromDate,
-          end: result.toDate,
+          start: new Date(result.start),
+          end: new Date(result.end),
         };
-        if (result.id) {
+        if (payload.id) {
           setEvents(
             events.map((event: payloadType) =>
               event.id === result.id ? result : event
@@ -114,6 +114,7 @@ const EventForm: React.FC<{
         }),
       });
       if (response.status == 200) {
+        setEvents(events.filter((event) => event.id != formData.id));
         closeHandler();
       } else {
         console.log("error");
