@@ -10,6 +10,11 @@ import { payloadType } from "../Models/payload";
 import eventsContext from "../Store/events-context";
 import styles from "./EventForm.module.css";
 import { form } from "../Models/form";
+import Box from "@mui/material/Box";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 /**
  * The popup form to add a new event.
@@ -22,7 +27,6 @@ const EventForm: React.FC<{
   setFormData: React.Dispatch<React.SetStateAction<form>>;
 }> = ({ closeHandler, formData, setFormData }) => {
   const { events, setEvents } = useContext(eventsContext);
-  console.log(formData.fromDate);
   const submitHandler = (event: FormEvent) => {
     event.preventDefault();
     let payload: payloadType = {
@@ -45,17 +49,16 @@ const EventForm: React.FC<{
       combinedEnd.setMinutes(formData.toTime.getMinutes());
       combinedEnd.setSeconds(formData.toTime.getSeconds());
       combinedEnd.setMilliseconds(formData.toTime.getMilliseconds());
-      console.log(combinedStart);
-      console.log(combinedEnd);
       payload = { ...payload, start: combinedStart, end: combinedEnd };
+    }
+    if (formData.eventType == "task") {
+      payload.priority = formData.priority;
     }
     let URL = "http://127.0.0.1:5000/add_event";
     if (formData.id) {
       payload = { ...payload, id: formData.id };
       URL = "http://127.0.0.1:5000/update_event";
     }
-
-    console.log(payload);
     (async () => {
       const response = await fetch(URL, {
         method: "POST",
@@ -158,6 +161,25 @@ const EventForm: React.FC<{
             fullWidth
           />
         </div>
+        {formData.eventType == "task" && (
+          <div className={styles.priorityContainer}>
+            <Box sx={{ minWidth: 120 }}>
+              <FormControl size="small">
+                <InputLabel id="priority-select-label">User</InputLabel>
+                <Select
+                  id="priority-select"
+                  value={formData.priority ? `${formData.priority}` : "1"}
+                  label="User"
+                  onChange={(event) => console.log(event.target.value)}
+                >
+                  <MenuItem value="1"> Low</MenuItem>
+                  <MenuItem value="2"> Medium</MenuItem>
+                  <MenuItem value="3"> High</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          </div>
+        )}
         <div className={styles.buttonContainer}>
           <div>
             <Button
