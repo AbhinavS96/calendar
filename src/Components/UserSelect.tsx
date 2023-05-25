@@ -11,74 +11,76 @@ import { payloadType } from "../Models/payload";
 export default function UserSelect() {
   const [users, setUsers] = useState<userType[] | []>([]);
   const [user, setUser] = useState<userType>();
-  const { setEvents } = useContext(eventsContext);
+  const { events, setEvents } = useContext(eventsContext);
   useEffect(() => {
     (async () => {
       const response = await fetch("http://127.0.0.1:5000/get_users");
       const result = await response.json();
       setUsers(result);
-      setUser(users[0]);
+      setUserHandler(result[0]);
     })();
   }, []);
-  useEffect(() => {
-    (async () => {
-      const response = await fetch("http://127.0.0.1:5000/get_events");
-      const result = await response.json();
+  const getEventsHandler = async () => {
+    const response = await fetch("http://127.0.0.1:5000/get_events");
+    const result = await response.json();
 
-      let mappedResults: payloadType[] = [];
-      if (Object.keys(result).length != 0) {
-        mappedResults.push(
-          result["events"].map((res: payloadType) => {
-            return {
-              ...res,
-              eventType: "event",
-              start: new Date(res.start),
-              end: new Date(res.end),
-            };
-          })
-        );
-        mappedResults.push(
-          result["tasks"].map((res: payloadType) => {
-            return {
-              ...res,
-              eventType: "task",
-              start: new Date(res.start),
-              end: new Date(res.end),
-            };
-          })
-        );
-        mappedResults.push(
-          result["reminders"].map((res: payloadType) => {
-            return {
-              ...res,
-              eventType: "reminder",
-              start: new Date(res.start),
-              end: new Date(res.end),
-            };
-          })
-        );
-      }
-      setEvents(mappedResults);
-    })();
-  }, [user]);
+    let mappedResults: payloadType[] = [];
+    if (Object.keys(result).length != 0) {
+      mappedResults.push(
+        ...result["events"].map((res: payloadType) => {
+          return {
+            ...res,
+            eventType: "event",
+            start: new Date(res.start),
+            end: new Date(res.end),
+          };
+        })
+      );
+      mappedResults.push(
+        ...result["tasks"].map((res: payloadType) => {
+          return {
+            ...res,
+            eventType: "task",
+            start: new Date(res.start),
+            end: new Date(res.end),
+          };
+        })
+      );
+      mappedResults.push(
+        ...result["reminders"].map((res: payloadType) => {
+          return {
+            ...res,
+            eventType: "reminder",
+            start: new Date(res.start),
+            end: new Date(res.end),
+          };
+        })
+      );
+    }
+    setEvents(mappedResults);
+  };
+
+  const setUserHandler = async (user: userType) => {
+    const response = await fetch("http://127.0.0.1:5000/set_user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: user.id }),
+    });
+    if (response.status == 200) {
+      setUser(user);
+      getEventsHandler();
+    } else {
+      console.log("error");
+    }
+  };
+
   const onChangeHandler = (event: SelectChangeEvent) => {
     const user: userType = users.filter(
       (user) => `${user.id}` == (event.target.value as string)[0]
     )[0];
-    (async () => {
-      const response = await fetch("http://127.0.0.1:5000/set_user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: user.id }),
-      });
-      if (response.status == 200) {
-        setUser(user);
-      } else {
-        console.log("error");
-      }
-    })();
+    setUserHandler(user);
   };
 
   return (

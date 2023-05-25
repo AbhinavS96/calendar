@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Calendar, Views, dayjsLocalizer, View } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import dayjs from "dayjs";
@@ -6,7 +6,6 @@ import dateContext from "../Store/date-context";
 import EventForm from "./EventForm";
 import { Modal } from "@mui/material";
 import eventsContext from "../Store/events-context";
-import { payloadType } from "../Models/payload";
 import { form } from "../Models/form";
 
 //localizer for the calendar is dayjs. This is the same as the one for MUI date components.
@@ -37,66 +36,25 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
   setView,
 }) => {
   const { selectedDate, setSelectedDate } = useContext(dateContext);
-  const [events, setEvents] = useState<payloadType[] | []>([]);
+  const { events } = useContext(eventsContext);
   const [modalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState(intialFormState);
 
   const selectSlotHandler = (event: any) => {
-    const fromDate = event.slots[0];
-    const toDate = event.slots.slice(-1)[0];
+    const fromDate = new Date(event.slots[0]);
+    const toDate = new Date(event.slots.slice(-1)[0]);
+    toDate.setSeconds(1);
     setFormData((prevData) => {
       return {
         ...prevData,
-        fromDate: new Date(fromDate),
-        toDate: new Date(toDate),
-        singleDate: new Date(fromDate),
+        fromDate: fromDate,
+        toDate: toDate,
+        singleDate: fromDate,
       };
     });
     setModalOpen(true);
     console.log(events);
   };
-
-  useEffect(() => {
-    (async () => {
-      const response = await fetch("http://127.0.0.1:5000/get_events");
-      const result = await response.json();
-
-      let mappedResults: payloadType[] = [];
-      if (Object.keys(result).length != 0) {
-        mappedResults.push(
-          ...result["events"].map((res: payloadType) => {
-            return {
-              ...res,
-              eventType: "event",
-              start: new Date(res.start),
-              end: new Date(res.end),
-            };
-          })
-        );
-        mappedResults.push(
-          ...result["tasks"].map((res: payloadType) => {
-            return {
-              ...res,
-              eventType: "task",
-              start: new Date(res.start),
-              end: new Date(res.end),
-            };
-          })
-        );
-        mappedResults.push(
-          ...result["reminders"].map((res: payloadType) => {
-            return {
-              ...res,
-              eventType: "reminder",
-              start: new Date(res.start),
-              end: new Date(res.end),
-            };
-          })
-        );
-      }
-      setEvents(mappedResults);
-    })();
-  }, []);
 
   const onSelectHandler = (event: any) => {
     setFormData((prev) => {
@@ -107,6 +65,12 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
         fromDate: event.start,
         toDate: event.end,
         id: event.id,
+        description: event.description,
+        allDay: event.allDay,
+        singleDate: event.start,
+        fromTime: event.start,
+        toTime: event.end,
+        priority: event.priority,
       };
     });
     setModalOpen(true);
@@ -160,15 +124,8 @@ const BigCalendar: React.FC<{ view: View; setView: (view: View) => void }> = ({
   return (
     <div className="big-container">
       <div className="big-wrapper">
-        <eventsContext.Provider
-          value={{
-            events: events,
-            setEvents: setEvents,
-          }}
-        >
-          {calendar}
-          {modal}
-        </eventsContext.Provider>
+        {calendar}
+        {modal}
       </div>
     </div>
   );
