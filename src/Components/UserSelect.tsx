@@ -74,8 +74,6 @@ export default function UserSelect() {
         body: JSON.stringify({ id: user.id }),
       });
       if (response.status == 200) {
-        const result = await response.json();
-        console.log(result.message);
         setUser(user);
       } else {
         console.log("error");

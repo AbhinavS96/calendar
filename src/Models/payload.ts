@@ -3,7 +3,8 @@ export type payloadType = {
   title: string;
   eventType?: string;
   description?: string;
-  start: Date;
-  end: Date;
+  start: Date | string;
+  end: Date | string;
   calendar_id?: number;
+  allDay?: boolean;
 };

@@ -22,32 +22,55 @@ const EventForm: React.FC<{
   setFormData: React.Dispatch<React.SetStateAction<form>>;
 }> = ({ closeHandler, formData, setFormData }) => {
   const { events, setEvents } = useContext(eventsContext);
+  console.log(formData.fromDate);
   const submitHandler = (event: FormEvent) => {
     event.preventDefault();
     let payload: payloadType = {
       title: formData.title,
       eventType: formData.eventType,
       description: formData.description,
-      start: formData.fromDate,
-      end: formData.toDate,
+      start: formData.fromDate.toLocaleString("be", { timeZoneName: "short" }),
+      end: formData.toDate.toLocaleString("be", { timeZoneName: "short" }),
       calendar_id: 1,
+      allDay: formData.allDay,
     };
+    if (!formData.allDay) {
+      const combinedStart = new Date(formData.singleDate);
+      const combinedEnd = new Date(formData.singleDate);
+      combinedStart.setHours(formData.fromTime.getHours());
+      combinedStart.setMinutes(formData.fromTime.getMinutes());
+      combinedStart.setSeconds(formData.fromTime.getSeconds());
+      combinedStart.setMilliseconds(formData.fromTime.getMilliseconds());
+      combinedEnd.setHours(formData.toTime.getHours());
+      combinedEnd.setMinutes(formData.toTime.getMinutes());
+      combinedEnd.setSeconds(formData.toTime.getSeconds());
+      combinedEnd.setMilliseconds(formData.toTime.getMilliseconds());
+      console.log(combinedStart);
+      console.log(combinedEnd);
+      payload = { ...payload, start: combinedStart, end: combinedEnd };
+    }
     let URL = "http://127.0.0.1:5000/add_event";
     if (formData.id) {
       payload = { ...payload, id: formData.id };
       URL = "http://127.0.0.1:5000/update_event";
     }
 
+    console.log(payload);
     (async () => {
       const response = await fetch(URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
       if (response.status == 200) {
-        const result = await response.json();
+        let result = await response.json();
+        result = {
+          ...result,
+          start: result.fromDate,
+          end: result.toDate,
+        };
         if (result.id) {
           console.log(result);
           setEvents(
